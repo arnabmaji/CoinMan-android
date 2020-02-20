@@ -20,6 +20,9 @@ public class CoinMan extends ApplicationAdapter {
 
 	private int manState = 0;
 	private int manStateChangeDelay = 0;
+	private float velocity = 0f;
+	private float gravity = 0.2f;
+	private float manYPosition;
 
 	
 	@Override
@@ -36,9 +39,12 @@ public class CoinMan extends ApplicationAdapter {
         man[2] = new Texture("frame-3.png");
         man[3] = new Texture("frame-4.png");
 
+
         // get height and width of man texture
         manHeight = man[0].getHeight();
         manWidth = man[0].getWidth();
+
+        manYPosition = height / 2; // initial position for man in air
 
 	}
 
@@ -61,8 +67,14 @@ public class CoinMan extends ApplicationAdapter {
 				manState = 0;
 			}
 		}
+
+		// define velocity for falling down
+		velocity += gravity;
+		manYPosition -= velocity;
+
+		if (manYPosition < 0) manYPosition = 0; // prevent man from going out of the screen
 		//draw man in the middle of the screen
-		batch.draw(man[manState], (width - manWidth)/2, (height - manHeight)/2);
+		batch.draw(man[manState], (width - manWidth)/2, manYPosition);
 
 		batch.end();
 	}
