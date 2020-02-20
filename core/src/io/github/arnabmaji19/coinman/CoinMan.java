@@ -6,6 +6,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class CoinMan extends ApplicationAdapter {
+
+	private static final int MAX_MAN_STATE_CHANGE_DELAY = 8;
+
 	private SpriteBatch batch;
 	private Texture backgroundTexture;
 	private Texture[] man;
@@ -14,6 +17,9 @@ public class CoinMan extends ApplicationAdapter {
 	private int width;
 	private int manHeight;
 	private int manWidth;
+
+	private int manState = 0;
+	private int manStateChangeDelay = 0;
 
 	
 	@Override
@@ -42,10 +48,23 @@ public class CoinMan extends ApplicationAdapter {
 
 		batch.draw(backgroundTexture, 0, 0, width, height); // draw background image to the screen
 
-        //draw man in the middle of the screen
-        batch.draw(man[0], (width - manWidth)/2, (height - manHeight)/2);
 
-        batch.end();
+		// set frequency for changing man state
+		if (manStateChangeDelay < MAX_MAN_STATE_CHANGE_DELAY){
+			manStateChangeDelay++;
+		} else {
+			manStateChangeDelay = 0;
+			// toggle between various man states
+			if (manState < man.length-1){
+				manState++;
+			} else {
+				manState = 0;
+			}
+		}
+		//draw man in the middle of the screen
+		batch.draw(man[manState], (width - manWidth)/2, (height - manHeight)/2);
+
+		batch.end();
 	}
 	
 	@Override
