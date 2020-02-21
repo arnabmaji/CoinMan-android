@@ -66,7 +66,7 @@ public class Man {
             // let the man jump
             yPosition += velocity;
             velocity -= GRAVITY;
-            if (velocity == 0) isJumping = false; // if upward velocity becomes 0 the man is not jumping anymore
+            if (velocity <= 0) isJumping = false; // if upward velocity becomes 0 the man is not jumping anymore
 
         } else {
             // let the man fall off the gravity

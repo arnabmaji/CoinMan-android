@@ -12,9 +12,13 @@ public class BombMaker extends MovingObjectMaker {
     public void createObject() {
         int bombXPosition = getScreenWidth() - Bomb.getBombWidth(); //create coin extreme right of the screen
         int bombYPosition = (int) (getRandom().nextDouble() * (double) getScreenHeight()); // randomly create coin along y axis
-        // create coin
-        Bomb bomb = new Bomb(bombXPosition, bombYPosition);
-        getMovingObjects().add(bomb); // add coin to all coins list
+
+        if ((bombYPosition + Bomb.getBombHeight()) <= getScreenHeight()){
+            // create coin if it fits on the screen
+            Bomb bomb = new Bomb(bombXPosition, bombYPosition);
+            getMovingObjects().add(bomb); // add coin to all coins list
+        }
+
     }
 
 }

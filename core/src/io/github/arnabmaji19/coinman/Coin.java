@@ -16,4 +16,8 @@ public class Coin extends MovingObject {
     public static int getCoinWidth() {
         return COIN_WIDTH;
     }
+
+    public static int getCoinHeight() {
+        return COIN_HEIGHT;
+    }
 }

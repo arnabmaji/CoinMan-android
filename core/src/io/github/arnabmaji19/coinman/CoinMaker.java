@@ -12,8 +12,12 @@ public class CoinMaker extends MovingObjectMaker {
     protected void createObject() {
         int coinXPosition = getScreenWidth() - Coin.getCoinWidth(); //create coin extreme right of the screen
         int coinYPosition = (int) (getRandom().nextDouble() * (double) getScreenHeight()); // randomly create coin along y axis
-        // create coin
-        Coin coin = new Coin(coinXPosition, coinYPosition);
-        getMovingObjects().add(coin); // add coin to all coins list
+
+        if ((coinYPosition + Coin.getCoinHeight()) <= getScreenHeight()){
+            // create coin only if it fits on screen
+            Coin coin = new Coin(coinXPosition, coinYPosition);
+            getMovingObjects().add(coin); // add coin to all coins list
+        }
+
     }
 }

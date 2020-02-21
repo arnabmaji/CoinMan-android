@@ -17,4 +17,7 @@ public class Bomb extends MovingObject{
         return BOMB_WIDTH;
     }
 
+    public static int getBombHeight() {
+        return BOMB_HEIGHT;
+    }
 }
