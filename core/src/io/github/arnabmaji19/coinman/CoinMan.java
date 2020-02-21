@@ -7,23 +7,13 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class CoinMan extends ApplicationAdapter {
 
-	private static final int MAX_MAN_STATE_CHANGE_DELAY = 8;
-
 	private SpriteBatch batch;
 	private Texture backgroundTexture;
-	private Texture[] man;
 
 	private int screenHeight;
 	private int screenWidth;
-	private int manHeight;
-	private int manWidth;
 
-	private int manState = 0;
-	private int manStateChangeDelay = 0;
-	private float velocity = 0f;
-	private float gravity = 0.2f;
-	private float manYPosition;
-
+	private Man man;
 	private CoinMaker coinMaker;
 	private BombMaker bombMaker;
 	
@@ -34,21 +24,10 @@ public class CoinMan extends ApplicationAdapter {
         screenHeight = Gdx.graphics.getHeight();
         screenWidth = Gdx.graphics.getWidth();
 		backgroundTexture = new Texture("bg.png"); // create background image to display on screen
-        man = new Texture[4]; // create all graphics assets for the man
-        // set all types of man textures
-        man[0] = new Texture("frame-1.png");
-        man[1] = new Texture("frame-2.png");
-        man[2] = new Texture("frame-3.png");
-        man[3] = new Texture("frame-4.png");
 
-
-        // get screenHeight and screenWidth of man texture
-        manHeight = man[0].getHeight();
-        manWidth = man[0].getWidth();
-
-        manYPosition = screenHeight / 2; // initial position for man in air
-		coinMaker = new CoinMaker(screenHeight, screenWidth);
-		bombMaker = new BombMaker(screenHeight, screenWidth);
+		man = new Man(screenHeight, screenWidth); // create man object
+		coinMaker = new CoinMaker(screenHeight, screenWidth); // create CoinMaker for creating coins
+		bombMaker = new BombMaker(screenHeight, screenWidth); // create BombMake for creating bombs
 	}
 
 	@Override
@@ -63,30 +42,15 @@ public class CoinMan extends ApplicationAdapter {
 		drawMovingObjects(coinMaker); // draw coins on screen
 		drawMovingObjects(bombMaker); // draw bombs on screen
 
-		// set frequency for changing man state
-		if (manStateChangeDelay < MAX_MAN_STATE_CHANGE_DELAY){
-			manStateChangeDelay++;
-		} else {
-			manStateChangeDelay = 0;
-			// toggle between various man states
-			if (manState < man.length-1){
-				manState++;
-			} else {
-				manState = 0;
-			}
-		}
 
-		if (Gdx.input.justTouched()) velocity -= 10; // move man upwards upon touch
+		man.animateCharacter(); // change man character in every interval
 
-		// define velocity for falling down
-		velocity += gravity;
-		manYPosition -= velocity;
+		if (Gdx.input.justTouched()) man.jump(); // move man upwards upon touch
 
-		if (manYPosition <= 0) {
-			manYPosition = 0; // prevent man from going out of the screen
-		}
-		//draw man in the middle of the screen
-		batch.draw(man[manState], (screenWidth - manWidth)/2, manYPosition);
+		man.move(); // let the man jump or fall off the gravity
+
+		//draw man on the screen
+		batch.draw(man.getTexture(), man.getXPosition(), man.getYPosition());
 
 		batch.end();
 	}
