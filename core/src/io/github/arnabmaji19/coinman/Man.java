@@ -33,7 +33,6 @@ public class Man {
         textures[1] = new Texture("frame-2.png");
         textures[2] = new Texture("frame-3.png");
         textures[3] = new Texture("frame-4.png");
-        gameOverTexture = new Texture("dizzy.png");
 
         // set man's height and width
         manHeight = textures[0].getHeight();
@@ -43,7 +42,7 @@ public class Man {
         velocity = 0f;
         this.screenHeight = screenHeight;
         yPosition = this.screenHeight / 2; // initial position for man in air along y axis
-        xPosition = (screenWidth - manWidth) / 2; // position for man in x axis
+        xPosition = (screenWidth - manWidth) / 4.0f; // position for man in x axis
         isJumping = false;
     }
 

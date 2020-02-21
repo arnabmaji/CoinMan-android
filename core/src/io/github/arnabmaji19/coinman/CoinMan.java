@@ -40,11 +40,7 @@ public class CoinMan extends ApplicationAdapter {
 		scoreBitmap.setColor(Color.WHITE);
 		scoreBitmap.getData().scale(5);
 
-		man = new Man(screenHeight, screenWidth); // create man object
-		coinMaker = new CoinMaker(screenHeight, screenWidth); // create CoinMaker for creating coins
-		bombMaker = new BombMaker(screenHeight, screenWidth); // create BombMake for creating bombs
-		scoreBoard = new ScoreBoard(); // create scoreboard to track scores
-		gameSate = GameSate.RUNNING; // initial game state
+		createNewGame(); // create new instance of the game
 	}
 
 	@Override
@@ -54,7 +50,11 @@ public class CoinMan extends ApplicationAdapter {
 		batch.draw(backgroundTexture, 0, 0, screenWidth, screenHeight); // draw background image to the screen
 
 		if (gameSate.equals(GameSate.GAME_OVER)){
-			batch.draw(man.getGameOverTexture(), man.getXPosition(), man.getYPosition()); // draw game over texture for man
+			drawMan(man.getGameOverTexture()); // draw game over texture for man
+			displayScoreBoard(); // display final score board
+
+			if(Gdx.input.justTouched()) createNewGame(); // create new instance of the game
+
 			batch.end();
 			return;
 		}
@@ -73,15 +73,31 @@ public class CoinMan extends ApplicationAdapter {
 		man.move(); // let the man jump or fall off the gravity
 
 		//draw man on the screen
-		batch.draw(man.getTexture(), man.getXPosition(), man.getYPosition());
+		drawMan(man.getTexture());
 
 		// look for object collision
         checkForCollision(coinMaker); // look for collision with coin
         checkForCollision(bombMaker); // look for collision with bomb
 
-		scoreBitmap.draw(batch, scoreBoard.getScore() + "", 50.0f, 100.0f);
+		displayScoreBoard(); // display score on screen
 
 		batch.end();
+	}
+
+	private void displayScoreBoard(){
+		scoreBitmap.draw(batch, scoreBoard.getScore() + "", 30.0f, 100.0f);
+	}
+
+	private void drawMan(Texture texture){
+		batch.draw(texture, man.getXPosition(), man.getYPosition());
+	}
+
+	private void createNewGame(){
+		man = new Man(screenHeight, screenWidth); // create man object
+		coinMaker = new CoinMaker(screenHeight, screenWidth); // create CoinMaker for creating coins
+		bombMaker = new BombMaker(screenHeight, screenWidth); // create BombMake for creating bombs
+		scoreBoard = new ScoreBoard(); // create scoreboard to track scores
+		gameSate = GameSate.RUNNING; // initial game state
 	}
 
 	private void checkForCollision(MovingObjectMaker movingObjectMaker){
