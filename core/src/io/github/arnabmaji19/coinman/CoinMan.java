@@ -13,8 +13,8 @@ public class CoinMan extends ApplicationAdapter {
 	private Texture backgroundTexture;
 	private Texture[] man;
 
-	private int height;
-	private int width;
+	private int screenHeight;
+	private int screenWidth;
 	private int manHeight;
 	private int manWidth;
 
@@ -24,13 +24,14 @@ public class CoinMan extends ApplicationAdapter {
 	private float gravity = 0.2f;
 	private float manYPosition;
 
+	private CoinMaker coinMaker;
 	
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-        // get screen height and width
-        height = Gdx.graphics.getHeight();
-        width = Gdx.graphics.getWidth();
+        // get screen screenHeight and screenWidth
+        screenHeight = Gdx.graphics.getHeight();
+        screenWidth = Gdx.graphics.getWidth();
 		backgroundTexture = new Texture("bg.png"); // create background image to display on screen
         man = new Texture[4]; // create all graphics assets for the man
         // set all types of man textures
@@ -40,20 +41,34 @@ public class CoinMan extends ApplicationAdapter {
         man[3] = new Texture("frame-4.png");
 
 
-        // get height and width of man texture
+        // get screenHeight and screenWidth of man texture
         manHeight = man[0].getHeight();
         manWidth = man[0].getWidth();
 
-        manYPosition = height / 2; // initial position for man in air
-
+        manYPosition = screenHeight / 2; // initial position for man in air
+		coinMaker = new CoinMaker(screenHeight, screenWidth);
 	}
 
 	@Override
 	public void render () {
 		batch.begin();
 
-		batch.draw(backgroundTexture, 0, 0, width, height); // draw background image to the screen
+		batch.draw(backgroundTexture, 0, 0, screenWidth, screenHeight); // draw background image to the screen
 
+		// create coin in a delay
+		if (coinMaker.getCount() < coinMaker.getCREATION_DELAY()) coinMaker.increaseCount();
+		else {
+			coinMaker.createObject(); // create new coin in each interval
+			coinMaker.resetCount(); // reset interval count
+		}
+
+		// move all existing coins along negative x axis
+		for (MovingObject coin : coinMaker.getMovingObjects()){
+			batch.draw(Coin.getCoinTexture(), coin.getXPosition(), coin.getYPosition()); //display coin texture
+			coin.moveAlongXAxis(); // move coin position for next iteration
+			coinMaker.removeLaterIfNecessary(coin); // mark coin to be removed later
+		}
+		coinMaker.removeUnnecessaryObjects(); // remove all unnecessary coins
 
 		// set frequency for changing man state
 		if (manStateChangeDelay < MAX_MAN_STATE_CHANGE_DELAY){
@@ -68,13 +83,17 @@ public class CoinMan extends ApplicationAdapter {
 			}
 		}
 
+		if (Gdx.input.justTouched()) velocity -= 10; // move man upwards upon touch
+
 		// define velocity for falling down
 		velocity += gravity;
 		manYPosition -= velocity;
 
-		if (manYPosition < 0) manYPosition = 0; // prevent man from going out of the screen
+		if (manYPosition <= 0) {
+			manYPosition = 0; // prevent man from going out of the screen
+		}
 		//draw man in the middle of the screen
-		batch.draw(man[manState], (width - manWidth)/2, manYPosition);
+		batch.draw(man[manState], (screenWidth - manWidth)/2, manYPosition);
 
 		batch.end();
 	}
@@ -83,4 +102,5 @@ public class CoinMan extends ApplicationAdapter {
 	public void dispose () {
 		batch.dispose();
 	}
+
 }
