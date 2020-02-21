@@ -10,11 +10,7 @@ public class Coin extends MovingObject {
     private static final int COIN_VELOCITY = 10;
 
     public Coin(int xPosition, int yPosition) {
-        super(xPosition, yPosition, COIN_HEIGHT, COIN_WIDTH, COIN_VELOCITY);
-    }
-
-    public static Texture getCoinTexture() {
-        return COIN_TEXTURE;
+        super(COIN_TEXTURE, xPosition, yPosition, COIN_HEIGHT, COIN_WIDTH, COIN_VELOCITY);
     }
 
     public static int getCoinWidth() {

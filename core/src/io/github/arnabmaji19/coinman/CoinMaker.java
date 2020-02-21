@@ -9,7 +9,7 @@ public class CoinMaker extends MovingObjectMaker {
     }
 
     @Override
-    public void createObject() {
+    protected void createObject() {
         int coinXPosition = getScreenWidth() - Coin.getCoinWidth(); //create coin extreme right of the screen
         int coinYPosition = (int) (getRandom().nextDouble() * (double) getScreenHeight()); // randomly create coin along y axis
         // create coin

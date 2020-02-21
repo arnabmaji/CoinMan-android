@@ -25,6 +25,7 @@ public class CoinMan extends ApplicationAdapter {
 	private float manYPosition;
 
 	private CoinMaker coinMaker;
+	private BombMaker bombMaker;
 	
 	@Override
 	public void create () {
@@ -47,6 +48,7 @@ public class CoinMan extends ApplicationAdapter {
 
         manYPosition = screenHeight / 2; // initial position for man in air
 		coinMaker = new CoinMaker(screenHeight, screenWidth);
+		bombMaker = new BombMaker(screenHeight, screenWidth);
 	}
 
 	@Override
@@ -55,20 +57,11 @@ public class CoinMan extends ApplicationAdapter {
 
 		batch.draw(backgroundTexture, 0, 0, screenWidth, screenHeight); // draw background image to the screen
 
-		// create coin in a delay
-		if (coinMaker.getCount() < coinMaker.getCREATION_DELAY()) coinMaker.increaseCount();
-		else {
-			coinMaker.createObject(); // create new coin in each interval
-			coinMaker.resetCount(); // reset interval count
-		}
+		coinMaker.createObjectInInterval(); // create coins in a certain interval
+		bombMaker.createObjectInInterval(); // create bombs in a certain interval
 
-		// move all existing coins along negative x axis
-		for (MovingObject coin : coinMaker.getMovingObjects()){
-			batch.draw(Coin.getCoinTexture(), coin.getXPosition(), coin.getYPosition()); //display coin texture
-			coin.moveAlongXAxis(); // move coin position for next iteration
-			coinMaker.removeLaterIfNecessary(coin); // mark coin to be removed later
-		}
-		coinMaker.removeUnnecessaryObjects(); // remove all unnecessary coins
+		drawMovingObjects(coinMaker); // draw coins on screen
+		drawMovingObjects(bombMaker); // draw bombs on screen
 
 		// set frequency for changing man state
 		if (manStateChangeDelay < MAX_MAN_STATE_CHANGE_DELAY){
@@ -101,6 +94,16 @@ public class CoinMan extends ApplicationAdapter {
 	@Override
 	public void dispose () {
 		batch.dispose();
+	}
+
+	private void drawMovingObjects(MovingObjectMaker objectMaker){
+		// move all existing objects along negative x axis
+		for (MovingObject object : objectMaker.getMovingObjects()){
+			batch.draw(object.getTexture(), object.getXPosition(), object.getYPosition()); //display object texture
+			object.moveAlongXAxis(); // move coin position for next iteration
+			objectMaker.removeLaterIfNecessary(object); // mark coin to be removed later
+		}
+		objectMaker.removeUnnecessaryObjects();
 	}
 
 }

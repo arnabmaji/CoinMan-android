@@ -28,18 +28,6 @@ public abstract class MovingObjectMaker {
         return random;
     }
 
-    public int getCount(){
-        return this.count;
-    }
-
-    public int getCREATION_DELAY(){
-        return this.CREATION_DELAY;
-    }
-
-    public void resetCount(){
-        this.count = 0;
-    }
-
     public List<MovingObject> getMovingObjects() {
         return movingObjects;
     }
@@ -52,12 +40,13 @@ public abstract class MovingObjectMaker {
         return screenWidth;
     }
 
-    public void increaseCount(){
-        this.count++;
-    }
-
-    public void createObjectIfNecessary(){
-
+    public void createObjectInInterval(){
+        // create object in a delay
+        if (this.count < CREATION_DELAY) count++;
+        else {
+            createObject(); // create new object in each interval
+            count = 0; // reset interval count
+        }
     }
 
     public void removeLaterIfNecessary(MovingObject object){
@@ -70,5 +59,5 @@ public abstract class MovingObjectMaker {
         objectsToBeRemoved.clear(); // clear the list
     }
 
-    public abstract void createObject();
+    protected abstract void createObject();
 }
