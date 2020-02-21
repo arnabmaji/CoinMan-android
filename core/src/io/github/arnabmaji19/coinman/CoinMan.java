@@ -2,7 +2,9 @@ package io.github.arnabmaji19.coinman;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
@@ -13,6 +15,7 @@ public class CoinMan extends ApplicationAdapter {
 
 	private SpriteBatch batch;
 	private Texture backgroundTexture;
+	private BitmapFont scoreBitmap;
 
 	private int screenHeight;
 	private int screenWidth;
@@ -20,6 +23,8 @@ public class CoinMan extends ApplicationAdapter {
 	private Man man;
 	private CoinMaker coinMaker;
 	private BombMaker bombMaker;
+	private ScoreBoard scoreBoard;
+
 	
 	@Override
 	public void create () {
@@ -29,9 +34,15 @@ public class CoinMan extends ApplicationAdapter {
         screenWidth = Gdx.graphics.getWidth();
 		backgroundTexture = new Texture("bg.png"); // create background image to display on screen
 
+		// create score bitmap for displaying score on screen
+		scoreBitmap = new BitmapFont();
+		scoreBitmap.setColor(Color.WHITE);
+		scoreBitmap.getData().scale(5);
+
 		man = new Man(screenHeight, screenWidth); // create man object
 		coinMaker = new CoinMaker(screenHeight, screenWidth); // create CoinMaker for creating coins
 		bombMaker = new BombMaker(screenHeight, screenWidth); // create BombMake for creating bombs
+		scoreBoard = new ScoreBoard(); // create scoreboard to track scores
 	}
 
 	@Override
@@ -59,6 +70,8 @@ public class CoinMan extends ApplicationAdapter {
 		// look for object collision
         checkForCollision(coinMaker); // look for collision with coin
         checkForCollision(bombMaker); // look for collision with bomb
+
+		scoreBitmap.draw(batch, scoreBoard.getScore() + "", 50.0f, 100.0f);
 
 		batch.end();
 	}
@@ -99,7 +112,11 @@ public class CoinMan extends ApplicationAdapter {
 
             // if current object collides with man
             if (Intersector.overlaps(manRectangle, movingObjectRectangle)){
-            	//TODO: determine collision type
+            	if (object instanceof Coin){ // if its a coin
+					scoreBoard.increaseScore(); // increase score
+				} else { // if it is a bomb
+
+				}
             	movingObjectList.remove(object); // remove collided object from screen
             }
         }

@@ -63,13 +63,13 @@ public class Man {
     public void move(){
 
         if (isJumping){
-            // let the man jump
+            // make the man jump
             yPosition += velocity;
             velocity -= GRAVITY;
             if (velocity <= 0) isJumping = false; // if upward velocity becomes 0 the man is not jumping anymore
 
         } else {
-            // let the man fall off the gravity
+            // make the man fall off the gravity
             velocity += GRAVITY;
             yPosition -= velocity;
 
