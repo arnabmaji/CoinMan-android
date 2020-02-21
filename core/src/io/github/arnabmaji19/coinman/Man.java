@@ -9,6 +9,7 @@ public class Man {
     private final static int JUMP_VELOCITY = 12;
 
     private Texture[] textures;
+    private Texture gameOverTexture;
 
     private int manHeight;
     private int manWidth;
@@ -32,6 +33,7 @@ public class Man {
         textures[1] = new Texture("frame-2.png");
         textures[2] = new Texture("frame-3.png");
         textures[3] = new Texture("frame-4.png");
+        gameOverTexture = new Texture("dizzy.png");
 
         // set man's height and width
         manHeight = textures[0].getHeight();
@@ -106,6 +108,10 @@ public class Man {
 
     public float getYPosition() {
         return yPosition;
+    }
+
+    public Texture getGameOverTexture() {
+        return gameOverTexture;
     }
 
     public int getManHeight() {

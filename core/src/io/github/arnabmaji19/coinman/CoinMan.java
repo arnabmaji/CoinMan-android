@@ -13,6 +13,8 @@ import java.util.List;
 
 public class CoinMan extends ApplicationAdapter {
 
+	private GameSate gameSate;
+
 	private SpriteBatch batch;
 	private Texture backgroundTexture;
 	private BitmapFont scoreBitmap;
@@ -25,7 +27,6 @@ public class CoinMan extends ApplicationAdapter {
 	private BombMaker bombMaker;
 	private ScoreBoard scoreBoard;
 
-	
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
@@ -43,6 +44,7 @@ public class CoinMan extends ApplicationAdapter {
 		coinMaker = new CoinMaker(screenHeight, screenWidth); // create CoinMaker for creating coins
 		bombMaker = new BombMaker(screenHeight, screenWidth); // create BombMake for creating bombs
 		scoreBoard = new ScoreBoard(); // create scoreboard to track scores
+		gameSate = GameSate.RUNNING; // initial game state
 	}
 
 	@Override
@@ -50,6 +52,12 @@ public class CoinMan extends ApplicationAdapter {
 		batch.begin();
 
 		batch.draw(backgroundTexture, 0, 0, screenWidth, screenHeight); // draw background image to the screen
+
+		if (gameSate.equals(GameSate.GAME_OVER)){
+			batch.draw(man.getGameOverTexture(), man.getXPosition(), man.getYPosition()); // draw game over texture for man
+			batch.end();
+			return;
+		}
 
 		coinMaker.createObjectInInterval(); // create coins in a certain interval
 		bombMaker.createObjectInInterval(); // create bombs in a certain interval
@@ -74,21 +82,6 @@ public class CoinMan extends ApplicationAdapter {
 		scoreBitmap.draw(batch, scoreBoard.getScore() + "", 50.0f, 100.0f);
 
 		batch.end();
-	}
-	
-	@Override
-	public void dispose () {
-		batch.dispose();
-	}
-
-	private void drawMovingObjects(MovingObjectMaker objectMaker){
-		// move all existing objects along negative x axis
-		for (MovingObject object : objectMaker.getMovingObjects()){
-			batch.draw(object.getTexture(), object.getXPosition(), object.getYPosition()); //display object texture
-			object.moveAlongXAxis(); // move coin position for next iteration
-			objectMaker.removeLaterIfNecessary(object); // mark coin to be removed later
-		}
-		objectMaker.removeUnnecessaryObjects();
 	}
 
 	private void checkForCollision(MovingObjectMaker movingObjectMaker){
@@ -115,12 +108,29 @@ public class CoinMan extends ApplicationAdapter {
             	if (object instanceof Coin){ // if its a coin
 					scoreBoard.increaseScore(); // increase score
 				} else { // if it is a bomb
-
+					gameSate = GameSate.GAME_OVER; // change game state to Game Over
 				}
             	movingObjectList.remove(object); // remove collided object from screen
             }
         }
 
     }
+	
+	@Override
+	public void dispose () {
+		batch.dispose();
+	}
+
+	private void drawMovingObjects(MovingObjectMaker objectMaker){
+		// move all existing objects along negative x axis
+		for (MovingObject object : objectMaker.getMovingObjects()){
+			batch.draw(object.getTexture(), object.getXPosition(), object.getYPosition()); //display object texture
+			object.moveAlongXAxis(); // move coin position for next iteration
+			objectMaker.removeLaterIfNecessary(object); // mark coin to be removed later
+		}
+		objectMaker.removeUnnecessaryObjects();
+	}
+
+	private enum GameSate { RUNNING, GAME_OVER}
 
 }
