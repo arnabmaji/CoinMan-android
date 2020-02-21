@@ -88,6 +88,10 @@ public class Man {
 
 
     public void jump(){
+        if (isJumping){ // if it is already jumping
+            velocity += (JUMP_VELOCITY / 2.0); // add some extra velocity
+            return;
+        }
         isJumping = true;
         velocity = JUMP_VELOCITY; // increase velocity in opposite direction
     }
@@ -102,5 +106,13 @@ public class Man {
 
     public float getYPosition() {
         return yPosition;
+    }
+
+    public int getManHeight() {
+        return manHeight;
+    }
+
+    public int getManWidth() {
+        return manWidth;
     }
 }

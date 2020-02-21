@@ -4,6 +4,10 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Rectangle;
+
+import java.util.List;
 
 public class CoinMan extends ApplicationAdapter {
 
@@ -52,6 +56,10 @@ public class CoinMan extends ApplicationAdapter {
 		//draw man on the screen
 		batch.draw(man.getTexture(), man.getXPosition(), man.getYPosition());
 
+		// look for object collision
+        checkForCollision(coinMaker); // look for collision with coin
+        checkForCollision(bombMaker); // look for collision with bomb
+
 		batch.end();
 	}
 	
@@ -69,5 +77,33 @@ public class CoinMan extends ApplicationAdapter {
 		}
 		objectMaker.removeUnnecessaryObjects();
 	}
+
+	private void checkForCollision(MovingObjectMaker movingObjectMaker){
+	    // create rectangle for man's current position
+        Rectangle manRectangle = new Rectangle(
+                man.getXPosition(),
+                man.getYPosition(),
+                man.getManWidth(),
+                man.getManHeight());
+
+        // look for collision
+		List<MovingObject> movingObjectList = movingObjectMaker.getMovingObjects();
+        for (MovingObject object : movingObjectList){
+            // create rectangle for current object
+            Rectangle movingObjectRectangle = new Rectangle(
+                    object.getXPosition(),
+                    object.getYPosition(),
+                    object.getObjectWidth(),
+                    object.getObjectWidth()
+            );
+
+            // if current object collides with man
+            if (Intersector.overlaps(manRectangle, movingObjectRectangle)){
+            	//TODO: determine collision type
+            	movingObjectList.remove(object); // remove collided object from screen
+            }
+        }
+
+    }
 
 }
